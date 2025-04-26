@@ -6,13 +6,15 @@
   import Slider from './Slider.svelte';
   import { applyEdit, undo, redo } from '$lib/stores/editorStore';
   import { exportImageHighResolution } from '$lib/utils/export';
+  import { sliderValues, updateSliderValue } from '$lib/stores/sliderValues';
   import type { EditType } from '$lib/types';
 
   const app = getContext<Application>('pixi');
   const spriteStore = getContext<Writable<Sprite | null>>('sprite');
 
-  function handleChange(type: EditType) {
-    return (val: number) => applyEdit({ type, value: val });
+  function handleSliderChange(type: EditType, value: number) {
+    applyEdit({ type, value });
+    updateSliderValue(type, value);
   }
 
   function handleUndo() {
@@ -51,29 +53,29 @@
       label="Brightness"
       min={-100}
       max={100}
-      step={1}
-      onChange={handleChange('brightness')}
+      value={$sliderValues.brightness}
+      onChange={(value) => handleSliderChange('brightness', value)}
     />
     <Slider 
       label="Contrast"
       min={-100}
       max={100}
-      step={1}
-      onChange={handleChange('contrast')}
+      value={$sliderValues.contrast}
+      onChange={(value) => handleSliderChange('contrast', value)}
     />
     <Slider 
       label="Saturation"
       min={-100}
       max={100}
-      step={1}
-      onChange={handleChange('saturation')}
+      value={$sliderValues.saturation}
+      onChange={(value) => handleSliderChange('saturation', value)}
     />
     <Slider 
       label="Temperature"
       min={-100}
       max={100}
-      step={1}
-      onChange={handleChange('temperature')}
+      value={$sliderValues.temperature}
+      onChange={(value) => handleSliderChange('temperature', value)}
     />
   </div>
 </div>

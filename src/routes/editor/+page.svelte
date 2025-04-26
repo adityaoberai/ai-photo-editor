@@ -3,6 +3,7 @@
   import { Application, Sprite, Texture } from 'pixi.js';
   import { ColorMatrixFilter } from '@pixi/filter-color-matrix';
   import ToolPanel from '$lib/components/ToolPanel.svelte';
+  import AIPanel from '$lib/components/AIPanel.svelte';
   import { edits } from '$lib/stores/editorStore';
   import { applyFilters } from '$lib/utils/filters';
   import { imageSrc } from '$lib/stores/image';
@@ -130,8 +131,13 @@
       <canvas bind:this={canvas}></canvas>
     </div>
   </div>
-  <div class="tools">
-    <ToolPanel />
+  <div class="sidebar">
+    <div class="tools">
+      <ToolPanel />
+    </div>
+    <div class="ai">
+      <AIPanel />
+    </div>
   </div>
 </div>
 
@@ -172,7 +178,14 @@
     display: block;
   }
 
-  .tools {
+  .sidebar {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 1rem;
+    height: 100%;
+  }
+
+  .tools, .ai {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
