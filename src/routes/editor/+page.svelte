@@ -14,22 +14,24 @@
   let canvasWrapper: HTMLDivElement;
   
   // Create a store for the sprite
-  const spriteStore = writable<Sprite | null>(null);
+  const currentSprite = writable<Sprite | null>(null);
   let sprite: Sprite | null = null;
-  spriteStore.subscribe(value => {
+  currentSprite.subscribe(value => {
     sprite = value;
   });
 
   // Initialize app and set context immediately
   $: if (canvas && !app) {
-    app = new Application(800, 600, {
+    app = new Application({
       view: canvas,
+      width: 800,
+      height: 600,
       transparent: true,
       antialias: true,
       resolution: window.devicePixelRatio || 1
     });
     setContext('pixi', app);
-    setContext('sprite', spriteStore);
+    setContext('sprite', currentSprite);
   }
 
   function updateSpriteScale() {
@@ -75,7 +77,7 @@
       app.stage.addChild(newSprite);
       
       // Update store instead of context
-      spriteStore.set(newSprite);
+      currentSprite.set(newSprite);
       
       // Update filters
       newSprite.filters = applyFilters($edits) as any[];
@@ -119,32 +121,23 @@
   });
 </script>
 
-<div class="editor-layout">
-  <div class="toolbar-wrapper">
-    <ToolPanel />
-  </div>
+<div class="editor">
   <div class="canvas-area">
     <div class="canvas-wrapper" bind:this={canvasWrapper}>
       <canvas bind:this={canvas}></canvas>
     </div>
   </div>
+  <div class="tools">
+    <ToolPanel />
+  </div>
 </div>
 
 <style>
-  .editor-layout {
+  .editor {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 1fr 300px;
+    gap: 1rem;
     height: 100vh;
-    width: 100vw;
-    background: #f0f0f0;
-    overflow: hidden;
-  }
-
-  .toolbar-wrapper {
-    background: white;
-    border-right: 1px solid #ddd;
-    height: 100vh;
-    overflow-y: auto;
     padding: 1rem;
   }
 
@@ -159,6 +152,7 @@
       linear-gradient(-45deg, transparent 75%, #eee 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    border-radius: 8px;
   }
 
   .canvas-wrapper {
@@ -173,5 +167,11 @@
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  .tools {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 </style>

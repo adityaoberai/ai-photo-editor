@@ -1,11 +1,12 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { Application, Sprite } from 'pixi.js';
+  import type { Application } from 'pixi.js';
+  import type { Sprite } from 'pixi.js';
   import type { Writable } from 'svelte/store';
   import Slider from './Slider.svelte';
-  import { applyEdit, undo, redo } from '../stores/editorStore';
-  import type { EditType } from '../types';
-  import { exportImageHighResolution } from '../utils/export';
+  import { applyEdit, undo, redo } from '$lib/stores/editorStore';
+  import { exportImageHighResolution } from '$lib/utils/export';
+  import type { EditType } from '$lib/types';
 
   const app = getContext<Application>('pixi');
   const spriteStore = getContext<Writable<Sprite | null>>('sprite');
@@ -32,24 +33,48 @@
 <div class="panel">
   <div class="actions">
     <button class="action-btn" on:click={handleUndo}>
-      <span class="material-icons">undo</span>
-      <span>Undo</span>
+      <span class="icon">↶</span>
+      <span class="label">Undo</span>
     </button>
     <button class="action-btn" on:click={handleRedo}>
-      <span class="material-icons">redo</span>
-      <span>Redo</span>
+      <span class="icon">↷</span>
+      <span class="label">Redo</span>
     </button>
     <button class="action-btn" on:click={handleExport}>
-      <span class="material-icons">download</span>
-      <span>Export</span>
+      <span class="icon">↓</span>
+      <span class="label">Export</span>
     </button>
   </div>
-
-  <div class="filters">
-    <Slider label="Brightness" min={-100} max={100} step={1} onChange={handleChange('brightness')} />
-    <Slider label="Contrast" min={-100} max={100} step={1} onChange={handleChange('contrast')} />
-    <Slider label="Temperature" min={-100} max={100} step={1} onChange={handleChange('temperature')} />
-    <Slider label="Saturation" min={-100} max={100} step={1} onChange={handleChange('saturation')} />
+  
+  <div class="sliders">
+    <Slider 
+      label="Brightness"
+      min={-100}
+      max={100}
+      step={1}
+      onChange={handleChange('brightness')}
+    />
+    <Slider 
+      label="Contrast"
+      min={-100}
+      max={100}
+      step={1}
+      onChange={handleChange('contrast')}
+    />
+    <Slider 
+      label="Saturation"
+      min={-100}
+      max={100}
+      step={1}
+      onChange={handleChange('saturation')}
+    />
+    <Slider 
+      label="Temperature"
+      min={-100}
+      max={100}
+      step={1}
+      onChange={handleChange('temperature')}
+    />
   </div>
 </div>
 
@@ -73,25 +98,36 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.25rem;
     padding: 0.5rem;
     background: none;
     border: none;
-    border-radius: 0.25rem;
-    color: #666;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s;
   }
 
   .action-btn:hover {
     background: #f5f5f5;
-    color: #000;
   }
 
-  .filters {
-    display: flex;
-    flex-direction: column;
+  .action-btn:active {
+    background: #e5e5e5;
+  }
+
+  .icon {
+    font-size: 1.2rem;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .sliders {
+    display: grid;
     gap: 1rem;
-    padding: 0 1rem;
+    padding: 0;
+    overflow-y: auto;
   }
 </style>
