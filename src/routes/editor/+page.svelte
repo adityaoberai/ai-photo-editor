@@ -96,6 +96,9 @@
   }
 
   onMount(() => {
+    // Clear all edits when page loads
+    edits.set([]);
+
     if (!$imageSrc) {
       goto('/upload');
       return;
