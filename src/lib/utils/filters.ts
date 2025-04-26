@@ -23,21 +23,17 @@ export function applyFilters(edits: EditInstruction[]): Filter[] {
         colorMatrix.saturate(value + 1, false);
         break;
       case 'temperature': {
-        if (value > 0) {
-          // Warm: increase red, decrease blue
-          const matrix = colorMatrix.matrix;
-          matrix[0] += value * 0.5;  // Red boost
-          matrix[2] -= value * 0.25; // Blue reduction in red channel
-          matrix[6] -= value * 0.15; // Blue reduction in green channel
-          matrix[8] -= value * 0.5;  // Blue reduction in blue channel
-        } else {
-          // Cool: increase blue, decrease red
-          const v = Math.abs(value);
-          const matrix = colorMatrix.matrix;
-          matrix[0] -= v * 0.5;  // Red reduction in red channel
-          matrix[4] -= v * 0.15; // Red reduction in green channel
-          matrix[8] += v * 0.5;  // Blue boost in blue channel
-        }
+        // Temperature adjustment using proper color balance
+        // Value range: -1 to 1 (-1 = cooler/blue, 1 = warmer/orange)
+        const redScale = 1 + value * 0.2;
+        const blueScale = 1 - value * 0.2;
+        
+        colorMatrix.matrix = [
+          redScale, 0, 0, 0, 0,
+          0, 1, 0, 0, 0,
+          0, 0, blueScale, 0, 0,
+          0, 0, 0, 1, 0
+        ];
         break;
       }
     }
