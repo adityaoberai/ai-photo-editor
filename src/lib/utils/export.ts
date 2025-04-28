@@ -36,12 +36,10 @@ export async function exportImageHighResolution(
     canvas.height = sprite.texture.baseTexture.height;
 
     // Create a temporary renderer with the same size
-    const tempApp = new Application({
-      width: canvas.width,
-      height: canvas.height,
-      antialias: true,
-      backgroundAlpha: 0
-    });
+    const tempApp = new Application();
+    tempApp.renderer.resize(canvas.width, canvas.height);
+    tempApp.renderer.options.antialias = true;
+    tempApp.renderer.resolution = window.devicePixelRatio || 1;
 
     // Create a new sprite with the same texture and filters
     const tempSprite = new Sprite(sprite.texture);
@@ -49,20 +47,15 @@ export async function exportImageHighResolution(
 
     // Add sprite to temp renderer and render
     tempApp.stage.addChild(tempSprite);
-    const renderTexture = tempApp.renderer.generateTexture(tempSprite);
-    tempApp.renderer.render(tempSprite, { renderTexture });
-
-    // Draw the render texture to our canvas
-    const pixels = tempApp.renderer.extract.pixels(renderTexture);
-    const imageData = new ImageData(
-      new Uint8ClampedArray(pixels),
-      canvas.width,
-      canvas.height
-    );
-    ctx.putImageData(imageData, 0, 0);
+    
+    // Render to canvas
+    tempApp.renderer.render(tempApp.stage);
+    
+    // Extract the rendered content
+    const renderedCanvas = tempApp.view as HTMLCanvasElement;
+    ctx.drawImage(renderedCanvas, 0, 0);
 
     // Clean up
-    renderTexture.destroy();
     tempSprite.destroy();
     tempApp.destroy(true);
 
