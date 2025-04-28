@@ -125,28 +125,55 @@
 </script>
 
 <div class="editor">
-  <div class="canvas-area">
-    <div class="canvas-wrapper" bind:this={canvasWrapper}>
-      <canvas bind:this={canvas}></canvas>
-    </div>
-  </div>
-  <div class="sidebar">
-    <div class="tools">
-      <ToolPanel />
-    </div>
-    <div class="ai">
-      <AIPanel />
+  <div class="editor-layout">
+    <div class="main-content">
+      <div class="sidebar left">
+        <div class="ai desktop-only">
+          <AIPanel />
+        </div>
+      </div>
+      <div class="canvas-area">
+        <div class="canvas-wrapper" bind:this={canvasWrapper}>
+          <canvas bind:this={canvas}></canvas>
+        </div>
+      </div>
+      <div class="sidebar right">
+        <div class="tools">
+          <ToolPanel />
+        </div>
+        <div class="ai mobile-only">
+          <AIPanel />
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
   .editor {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 1rem;
+    width: 100%;
     height: 100vh;
     padding: 1rem;
+    box-sizing: border-box;
+    background: #f0f0f0;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+  }
+
+  .editor-layout {
+    display: grid;
+    gap: 1rem;
+    max-width: 95vw;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .main-content {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 20vw minmax(auto, 50vw) 20vw;
+    justify-content: center;
   }
 
   .canvas-area {
@@ -161,12 +188,15 @@
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    aspect-ratio: 3/2;
+    height: 85vh;
+    max-width: 50vw;
+    margin: 0 auto;
   }
 
   .canvas-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
     height: 100%;
   }
@@ -177,16 +207,69 @@
     display: block;
   }
 
-  .sidebar {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 1rem;
-    height: 100%;
-  }
-
   .tools, .ai {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+    height: 85vh;
+  }
+
+  /* Desktop layout - large screens only */
+  @media (min-width: 1200px) {
+    .editor {
+      padding: 0 1rem;
+    }
+    .sidebar {
+      position: sticky;
+      top: 1rem;
+    }
+
+    .mobile-only {
+      display: none;
+    }
+  }
+
+  /* Mobile/Tablet layout */
+  @media (max-width: 1199px) {
+    .editor {
+      align-items: flex-start;
+    }
+    .main-content {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .canvas-area {
+      max-width: 90vw;
+      width: 100%;
+      height: 50vh;
+      aspect-ratio: 3/2;
+      margin: 0 auto;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      height: 100%;
+    }
+
+    .desktop-only {
+      display: none;
+    }
+
+    .tools, .ai {
+      height: auto;
+      min-height: 200px;
+      max-height: 50vh;
+    }
+
+    .sidebar.right {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 1rem;
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
+    }
   }
 </style>
