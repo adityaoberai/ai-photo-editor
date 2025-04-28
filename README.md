@@ -1,38 +1,74 @@
-# sv
+# AI Photo Editor
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A modern web-based photo editor built with SvelteKit and Pixi.js, featuring AI-powered suggestions and real-time image adjustments.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Real-time Image Editing**
+  - Brightness adjustment
+  - Contrast control
+  - Saturation enhancement
+  - Temperature/warmth adjustment
+  - High-quality image export
 
-```bash
-# create a new project in the current directory
-npx sv create
+- **AI Integration** *(WIP)*
+  - AI-powered editing suggestions
+  - Smart filter recommendations
+  - Real-time preview of AI suggestions
 
-# create a new project in my-app
-npx sv create my-app
-```
+- **Modern UI/UX**
+  - Responsive design for desktop and mobile
+  - Intuitive slider controls
+  - Side-by-side comparison with original
+  - Undo/Redo functionality
+  - Quick export options
 
-## Developing
+## Tech Stack
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- **Frontend Framework**: SvelteKit
+- **Image Processing**: Pixi.js
+- **State Management**: Svelte Stores
+- **Styling**: CSS with responsive design
+- **Build Tool**: Vite
 
-```bash
-npm run dev
+## Getting Started
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/ai-photo-editor.git
+   cd ai-photo-editor
+   ```
 
-## Building
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-To create a production version of your app:
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## Building for Production
+
+To create a production build:
 
 ```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+npm run preview
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
