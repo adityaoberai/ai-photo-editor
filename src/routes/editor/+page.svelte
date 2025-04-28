@@ -1,10 +1,9 @@
 <script lang="ts">
   import { onMount, setContext } from 'svelte';
   import { Application, Sprite, Texture } from 'pixi.js';
-  import { ColorMatrixFilter } from '@pixi/filter-color-matrix';
   import ToolPanel from '$lib/components/ToolPanel.svelte';
   import AIPanel from '$lib/components/AIPanel.svelte';
-  import { edits } from '$lib/stores/editorStore';
+  import { editStack } from '$lib/stores/editorStore';
   import { applyFilters } from '$lib/utils/filters';
   import { imageSrc } from '$lib/stores/image';
   import { goto } from '$app/navigation';
@@ -81,7 +80,7 @@
       currentSprite.set(newSprite);
       
       // Update filters
-      newSprite.filters = applyFilters($edits) as any[];
+      newSprite.filters = applyFilters() as any[];
 
       // Update scale
       updateSpriteScale();
@@ -91,14 +90,14 @@
     img.src = $imageSrc;
   }
 
-  // Subscribe to edits for filter updates
+  // Subscribe to sliderValues for filter updates
   $: if (sprite) {
-    sprite.filters = applyFilters($edits) as any[];
+    sprite.filters = applyFilters() as any[];
   }
 
   onMount(() => {
     // Clear all edits when page loads
-    edits.set([]);
+    editStack.set([[]]);
 
     if (!$imageSrc) {
       goto('/upload');

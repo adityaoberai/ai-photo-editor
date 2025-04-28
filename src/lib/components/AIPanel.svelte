@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { edits } from '$lib/stores/editorStore';
-  import { sliderValues, updateSliderValue } from '$lib/stores/sliderValues';
+  import { applyEdit } from '$lib/stores/editorStore';
   import type { EditType } from '$lib/types';
   
   interface AISuggestion {
@@ -42,13 +41,7 @@
   ];
 
   function applyAISuggestion(suggestedEdits: Array<{ type: EditType, value: number }>) {
-    // Update edits store
-    edits.update(currentEdits => [...currentEdits, ...suggestedEdits]);
-    
-    // Update slider values
-    suggestedEdits.forEach(edit => {
-      updateSliderValue(edit.type, edit.value);
-    });
+    applyEdit(suggestedEdits);
   }
 </script>
 

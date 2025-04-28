@@ -6,7 +6,7 @@
   import Slider from './Slider.svelte';
   import { applyEdit, undo, redo } from '$lib/stores/editorStore';
   import { exportImageHighResolution } from '$lib/utils/export';
-  import { sliderValues, updateSliderValue } from '$lib/stores/sliderValues';
+  import { sliderValues } from '$lib/stores/sliderValues';
   import type { EditType } from '$lib/types';
 
   const app = getContext<Application>('pixi');
@@ -14,7 +14,6 @@
 
   function handleSliderChange(type: EditType, value: number) {
     applyEdit({ type, value });
-    updateSliderValue(type, value);
   }
 
   function handleUndo() {
@@ -87,6 +86,8 @@
     gap: 1.5rem;
     width: 100%;
     height: 100%;
+    min-width: 280px;
+    min-height: 480px;
   }
 
   .actions {
@@ -129,7 +130,7 @@
   .sliders {
     display: grid;
     gap: 1rem;
-    padding: 0;
-    overflow-y: auto;
+    padding: 0 1rem;
+    overflow-y: visible;
   }
 </style>
