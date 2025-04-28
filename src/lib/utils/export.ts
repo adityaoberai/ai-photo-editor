@@ -25,46 +25,65 @@ export async function exportImageHighResolution(
   filters: Filter<any>[] = sprite.filters as Filter<any>[] || [],
   format: string = 'image/png'
 ): Promise<Blob> {
-  // Create a temporary canvas for high-resolution export
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Could not get canvas context');
+  try {
+    // Create a temporary canvas for high-resolution export
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Could not get canvas context');
 
-  // Set canvas size to original texture size
-  canvas.width = sprite.texture.baseTexture.width;
-  canvas.height = sprite.texture.baseTexture.height;
+    // Set canvas size to original texture size
+    canvas.width = sprite.texture.baseTexture.width;
+    canvas.height = sprite.texture.baseTexture.height;
 
-  // Apply filters at original resolution
-  const tempSprite = new Sprite(sprite.texture);
-  tempSprite.filters = filters;
+    // Create a temporary renderer with the same size
+    const tempApp = new Application({
+      width: canvas.width,
+      height: canvas.height,
+      antialias: true,
+      backgroundAlpha: 0
+    });
 
-  // Create a temporary renderer
-  const tempApp = new Application({
-    width: canvas.width,
-    height: canvas.height,
-    antialias: true,
-    transparent: true,
-  });
+    // Create a new sprite with the same texture and filters
+    const tempSprite = new Sprite(sprite.texture);
+    tempSprite.filters = filters;
 
-  // Add sprite to temp renderer and render
-  tempApp.stage.addChild(tempSprite);
-  tempApp.renderer.render(tempApp.stage);
+    // Add sprite to temp renderer and render
+    tempApp.stage.addChild(tempSprite);
+    const renderTexture = tempApp.renderer.generateTexture(tempSprite);
+    tempApp.renderer.render(tempSprite, { renderTexture });
 
-  // Clean up
-  tempApp.destroy(true);
+    // Draw the render texture to our canvas
+    const pixels = tempApp.renderer.extract.pixels(renderTexture);
+    const imageData = new ImageData(
+      new Uint8ClampedArray(pixels),
+      canvas.width,
+      canvas.height
+    );
+    ctx.putImageData(imageData, 0, 0);
 
-  // Convert to blob and create download
-  const blob = await new Promise<Blob>((resolve) => 
-    canvas.toBlob((b) => resolve(b!), format)
-  );
+    // Clean up
+    renderTexture.destroy();
+    tempSprite.destroy();
+    tempApp.destroy(true);
 
-  // Create and trigger download
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'edited.png';
-  a.click();
-  URL.revokeObjectURL(url);
+    // Convert to blob and create download
+    const blob = await new Promise<Blob>((resolve) => 
+      canvas.toBlob((b) => resolve(b!), format, 1.0)
+    );
 
-  return blob;
+    // Create and trigger download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'edited-image.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    return blob;
+  } catch (error) {
+    console.error('Export failed:', error);
+    throw error;
+  }
 }
